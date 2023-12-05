@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.Scanner;
 
 class Student {
-    protected String StudentId;
+
+    protected String StudentId; 
     protected String name;
     private double programmingFundamentalsMarks;
     private double databaseManagementSystemMarks;
@@ -42,6 +43,7 @@ class Student {
 
     public double getDatabaseManagementSystemMarks() {
         return databaseManagementSystemMarks;
+
     }
 
     public void setDatabaseManagementSystemMarks(double databaseManagementSystemMarks) {
@@ -114,12 +116,14 @@ class StudentManager {
                 return;
             }
         }
+
         students.add(student);
     }
 
     public Student findStudent(String StudentId) {
         for (Student student : students) {
             if (student.getStudentId().equals(StudentId)) {
+
                 return student;
             }
         }
@@ -172,6 +176,7 @@ class StudentMenu {
 
     public void displayMenu() {
         while (true) {
+
             System.out.println("1. Add Undergraduate Student");
             System.out.println("2. Add Graduate Student");
             System.out.println("3. Update Student Name");
@@ -248,6 +253,7 @@ class StudentMenu {
     private void updateStudentMarks() {
         System.out.print("Enter Student ID: ");
         String StudentId = scanner.nextLine();
+
         System.out.print("Enter Programming Fundamentals Marks: ");
         double pfMarks = scanner.nextDouble();
         System.out.print("Enter Database Management System Marks: ");
