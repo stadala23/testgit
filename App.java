@@ -4,29 +4,29 @@ import java.util.List;
 import java.util.Scanner;
 
 class Student {
-    protected String id;
+
+    protected String StudentId; 
     protected String name;
     private double programmingFundamentalsMarks;
     private double databaseManagementSystemMarks;
 
-    public Student(String id, String name) {
-        this.id = id;
+    public Student(String StudentId, String name) {
+        this.StudentId = StudentId;
         this.name = name;
         this.programmingFundamentalsMarks = 0.0;
         this.databaseManagementSystemMarks = 0.0;
     }
 
-
-    public String getId() {
-        return this.id;
+    public String getStudentId() {
+        return StudentId;
     }
 
     public void setId(String id) {
-        this.id = id;
+        this.StudentId = StudentId;
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -34,7 +34,7 @@ class Student {
     }
 
     public double getProgrammingFundamentalsMarks() {
-        return this.programmingFundamentalsMarks;
+        return programmingFundamentalsMarks;
     }
 
     public void setProgrammingFundamentalsMarks(double programmingFundamentalsMarks) {
@@ -42,17 +42,63 @@ class Student {
     }
 
     public double getDatabaseManagementSystemMarks() {
-        return this.databaseManagementSystemMarks;
+        return databaseManagementSystemMarks;
+
     }
 
     public void setDatabaseManagementSystemMarks(double databaseManagementSystemMarks) {
         this.databaseManagementSystemMarks = databaseManagementSystemMarks;
     }
-    
 
     @Override
     public String toString() {
-        return "ID: " + id + ", Name: " + name + ", PF Marks: " + programmingFundamentalsMarks + ", DBMS Marks: " + databaseManagementSystemMarks;
+        return "ID: " + StudentId + ", Name: " + name + ", PF Marks: " + programmingFundamentalsMarks + ", DBMS Marks: " + databaseManagementSystemMarks;
+    }
+}
+
+// Undergraduate student class
+class UndergraduateStudent extends Student {
+    private String major;
+
+    public UndergraduateStudent(String StudentId, String name, String major) {
+        super(StudentId, name);
+        this.major = major;
+    }
+
+    public String getMajor() {
+        return major;
+    }
+
+    public void setMajor(String major) {
+        this.major = major;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + ", Major: " + major;
+    }
+}
+
+// Graduate student class
+class GraduateStudent extends Student {
+    private String researchArea;
+
+    public GraduateStudent(String id, String name, String researchArea) {
+        super(id, name);
+        this.researchArea = researchArea;
+    }
+
+    public String getResearchArea() {
+        return researchArea;
+    }
+
+    public void setResearchArea(String researchArea) {
+        this.researchArea = researchArea;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + ", Research Area: " + researchArea;
     }
 }
 
@@ -63,37 +109,39 @@ class StudentManager {
         students = new ArrayList<>();
     }
 
-       public void addStudent(String id, String name) {
+    public void addStudent(Student student) {
         for (Student s : students) {
-            if (s.getId().equals(id)) {
+            if (s.getStudentId().equals(student.getStudentId())) {
                 System.out.println("Student already exists.");
                 return;
             }
         }
-        students.add(new Student(id, name));
+
+        students.add(student);
     }
 
-    public Student findStudent(String id) {
+    public Student findStudent(String StudentId) {
         for (Student student : students) {
-            if (student.getId().equals(id)) {
+            if (student.getStudentId().equals(StudentId)) {
+
                 return student;
             }
         }
         return null;
     }
 
-    public void updateStudent(String id, String newName) {
-        for (Student s : students) {
-            if (s.getId().equals(id)) {
-                s.setName(newName);
-                return;
-            }
+    public void updateStudent(String StudentId, String newName) {
+        Student student = findStudent(StudentId);
+        if (student != null) {
+            student.setName(newName);
+        } else {
+            System.out.println("Student not found.");
         }
-        System.out.println("Student not found.");
     }
 
-       public void deleteStudent(String id) {
-        Student student = findStudent(id);
+    public void  deleteStudent(String StudentId) {
+        
+        Student student = findStudent(StudentId);
         if (student != null) {
             students.remove(student);
             System.out.println("Student deleted successfully.");
@@ -102,59 +150,65 @@ class StudentManager {
         }
     }
 
-    public void updateStudentMarks(String id, double pfMarks, double dbmsMarks) {
-        Student student = findStudent(id);
+    public void updateStudentMarks(String StudentId, double pfMarks, double dbmsMarks) {
+        Student student = findStudent(StudentId);
         if (student != null) {
             student.setProgrammingFundamentalsMarks(pfMarks);
             student.setDatabaseManagementSystemMarks(dbmsMarks);
+        } else {
+            System.out.println("Student not found.");
         }
     }
 
-    
     public List<Student> getStudents() {
         return students;
     }
 }
 
-
-
-class Menu {
+class StudentMenu {
     private StudentManager studentManager;
     private Scanner scanner;
 
-    public Menu() {
+    public StudentMenu() {
         studentManager = new StudentManager();
         scanner = new Scanner(System.in);
     }
 
     public void displayMenu() {
         while (true) {
-            System.out.println("1. Add Student");
-            System.out.println("2. Update Student Name");
-            System.out.println("3. Update Student Marks");
-            System.out.println("4. Delete Student");
-            System.out.println("5. Display Students");
-            System.out.println("6. Exit");
+
+            System.out.println("1. Add Undergraduate Student");
+            System.out.println("2. Add Graduate Student");
+            System.out.println("3. Update Student Name");
+            System.out.println("4. Update Student Marks");
+            System.out.println("5. Delete Student");
+            System.out.println("6. Display Students");
+            System.out.println("7. Exit");
             System.out.print("Enter your choice: ");
+
             int choice = scanner.nextInt();
-            scanner.nextLine();
+            scanner.nextLine();  // Consume newline
+
             switch (choice) {
                 case 1:
-                    addStudent();
+                    addUndergraduateStudent();
                     break;
                 case 2:
-                    updateStudentName();
+                    addGraduateStudent();
                     break;
                 case 3:
-                    updateStudentMarks();
+                    updateStudentName();
                     break;
                 case 4:
-                    deleteStudent();
+                    updateStudentMarks();
                     break;
                 case 5:
-                    displayStudents();
+                    deleteStudent();
                     break;
                 case 6:
+                    displayStudents();
+                    break;
+                case 7:
                     System.out.println("Exiting...");
                     return;
                 default:
@@ -163,40 +217,55 @@ class Menu {
         }
     }
 
-    private void addStudent() {
+    private void addUndergraduateStudent() {
         System.out.print("Enter Student ID: ");
-        String id = scanner.nextLine();
+        String StudentId = scanner.nextLine();
         System.out.print("Enter Student Name: ");
         String name = scanner.nextLine();
-        Student student = new Student(id, name);
-        studentManager.addStudent(student.getId(),student.getName());
-        System.out.println("Student added successfully.");
+        System.out.print("Enter Major: ");
+        String major = scanner.nextLine();
+        UndergraduateStudent student = new UndergraduateStudent(StudentId, name, major);
+        studentManager.addStudent(student);
+        System.out.println("Undergraduate Student added successfully.");
+    }
+
+    private void addGraduateStudent() {
+        System.out.print("Enter Student ID: ");
+        String StudentId = scanner.nextLine();
+        System.out.print("Enter Student Name: ");
+        String name = scanner.nextLine();
+        System.out.print("Enter Research Area: ");
+        String researchArea = scanner.nextLine();
+        GraduateStudent student = new GraduateStudent(StudentId, name, researchArea);
+        studentManager.addStudent(student);
+        System.out.println("Graduate Student added successfully.");
     }
 
     private void updateStudentName() {
         System.out.print("Enter Student ID: ");
-        String id = scanner.nextLine();
+        String StudentId = scanner.nextLine();
         System.out.print("Enter New Name: ");
         String newName = scanner.nextLine();
-        studentManager.updateStudent(id, newName);
+        studentManager.updateStudent(StudentId, newName);
         System.out.println("Student name updated successfully.");
     }
 
     private void updateStudentMarks() {
         System.out.print("Enter Student ID: ");
-        String id = scanner.nextLine();
+        String StudentId = scanner.nextLine();
+
         System.out.print("Enter Programming Fundamentals Marks: ");
         double pfMarks = scanner.nextDouble();
         System.out.print("Enter Database Management System Marks: ");
         double dbmsMarks = scanner.nextDouble();
-        studentManager.updateStudentMarks(id, pfMarks, dbmsMarks);
+        studentManager.updateStudentMarks(StudentId, pfMarks, dbmsMarks);
         System.out.println("Student marks updated successfully.");
     }
 
     private void deleteStudent() {
         System.out.print("Enter Student ID: ");
-        String id = scanner.nextLine();
-        studentManager.deleteStudent(id);
+        String StudentId = scanner.nextLine();
+        studentManager.deleteStudent(StudentId);
         System.out.println("Student deleted successfully.");
     }
 
@@ -208,9 +277,9 @@ class Menu {
     }
 }
 
-public class app {
+public class App {
     public static void main(String[] args) {
-        Menu menu = new Menu();
+        StudentMenu menu = new StudentMenu();
         menu.displayMenu();
     }
 }
